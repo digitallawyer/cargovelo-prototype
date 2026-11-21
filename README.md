@@ -26,12 +26,12 @@ Click tracking for the team: call-to-actions carry their source (`data-track`), 
 
 ## v2 form (sends an email)
 
-The form on `/v2/#boeken` sends each submission by email to **nysjo85@gmail.com** with **pieter@legal.io** in copy, using [FormSubmit](https://formsubmit.co) (a free service, because GitHub Pages is static).
+The form on `/v2/contact/` (and the bottom of the home page) sends each submission by email to **nysjo85@gmail.com** with **pieter@legal.io** in copy, using [FormSubmit](https://formsubmit.co) (a free service, because GitHub Pages is static).
 
 - **First time:** the first real submission makes FormSubmit email nysjo85@gmail.com asking to confirm. Confirm once and every later submission is delivered. Nothing has been sent from the prototype yet.
-- **Spam:** includes a hidden honeypot field. The addresses are visible in the page source. After activation FormSubmit can give a random alias to use instead; change `TO` in `v2/index.html`.
+- **Spam:** includes a hidden honeypot field. The addresses are visible in the page source. After activation FormSubmit can give a random alias to use instead; change `TO` in `tools/v2_onepage.html` and rebuild.
 - **If sending fails** the form offers a pre-filled `mailto:` link and the phone number.
-- To change recipients, edit `TO` and `CC` near the bottom of `v2/index.html`.
+- To change recipients, edit `TO` and `CC` near the bottom of `tools/v2_onepage.html`, run `python3 tools/build_v2.py`, and commit.
 
 ## Things to confirm (also listed on the strategy page)
 
