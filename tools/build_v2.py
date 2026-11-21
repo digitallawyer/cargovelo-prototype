@@ -32,11 +32,11 @@ J_CITY = chunk("// city explorer", "// CTA buttons")
 J_CTA = chunk("// CTA buttons", None).replace("})();\n</script>", "")
 
 SEC = {k: section(k) for k in ["klanten", "oplossingen", "wie", "steden", "haast", "medisch", "biotech", "reviews", "duurzaam", "mensen", "boeken"]}
-SEC["boeken"] = SEC["boeken"].replace("Je gegevens worden alleen gebruikt om je aanvraag te beantwoorden.", "Je gegevens worden alleen gebruikt om je aanvraag te beantwoorden. We noteren ook welke pagina's van deze site je bekeek, zodat we je beter kunnen helpen.")
+SEC["boeken"] = SEC["boeken"].replace("<li>Klantenservice: maandag tot vrijdag, 8u tot 17u</li>", '<li id="dispatch-status">Klantenservice: maandag tot vrijdag, 8u tot 17u</li>').replace("Je gegevens worden alleen gebruikt om je aanvraag te beantwoorden.", "Je gegevens worden alleen gebruikt om je aanvraag te beantwoorden. We noteren ook welke pagina's van deze site je bekeek, zodat we je beter kunnen helpen.")
 MEER = section("meer")
 k = MEER.index('<div class="sens"')
 BENTO = MEER[:k] + "</div></section>"
-SENS = '<section class="light" style="padding-top:96px"><div class="wrap">' + MEER[k:]
+SENS = '<section class="light" style="padding-top:72px;padding-bottom:72px"><div class="wrap">' + MEER[k:]
 SEC_PROMISE = SRC[SRC.index('<section class="promise light">'):SRC.index("</section>", SRC.index('<section class="promise light">')) + 10]
 SEC_TEAM_FORM = SEC["boeken"]
 
@@ -272,6 +272,7 @@ def script(slug, has_form, has_city, has_hero):
         parts.append("if(document.getElementById('form')){\n" + form + "\n}\n")
     parts.append(J_MEGA + "window.addEventListener('scroll',function(){if(!mg.hidden&&matchMedia('(min-width:1001px)').matches)mega(false)},{passive:true});\n")
     if has_city: parts.append("if(document.getElementById('cpanel')){\n" + J_CITY + "\n}\n")
+    parts.append(J_BTN)
     parts.append(SCRIPT_TAIL)
     parts.append("})();\n</script>")
     return "".join(parts)
@@ -363,7 +364,7 @@ def build_body(slug):
     if slug == "dna-en-biotech":
         return promote_h1(SEC["biotech"]) + ctaband(slug, "Biotech-logistiek bespreken? Praat met ons.", "biotech", "Praat met ons"), meta_faq
     if slug == "gevoelige-leveringen":
-        return pagehead(slug, "Gevoelige leveringen, met vertrouwen.", "Sommige zendingen mogen je gewoon niet uit handen vallen. Die behandelen we met discretie, zorg en een vast aanspreekpunt, van ophaling tot bewijs.", image=IMG["handoff"], cta=("Bespreek je zending", "andere")) + SENS.replace("<h3>Gevoelige leveringen, met vertrouwen.</h3>", "<h2>Waar we mee omgaan.</h2>").replace('<div class="sens" id="gevoelig">', '<div class="sens" id="gevoelig">') + ctaband(slug, "Een gevoelige zending? Vertel ons wat er mee moet.", "andere", "Bespreek je zending"), meta_faq
+        return pagehead(slug, "Gevoelige leveringen, met vertrouwen.", "Sommige zendingen mogen je gewoon niet uit handen vallen. Die behandelen we met discretie, zorg en een vast aanspreekpunt, van ophaling tot bewijs.", image=IMG["handoff"], cta=("Bespreek je zending", "andere")) + re.sub(r"<p>Sommige zendingen mogen.*?</p>", "", SENS.replace("<h3>Gevoelige leveringen, met vertrouwen.</h3>", "<h2>Waar we mee omgaan.</h2>"), count=1, flags=re.S).replace('class="sens" id="gevoelig"', 'class="sens" id="gevoelig" style="margin-top:0"').replace('<div class="sens" id="gevoelig">', '<div class="sens" id="gevoelig">') + ctaband(slug, "Een gevoelige zending? Vertel ons wat er mee moet.", "andere", "Bespreek je zending"), meta_faq
     if slug == "vaste-rondes-en-bevoorrading":
         return promote_h1(BENTO) + ctaband(slug, "Een vaste ronde of bevoorrading regelen?", "andere", "Vraag een voorstel"), meta_faq
     if slug == "logistieke-partners":
@@ -379,18 +380,61 @@ def build_body(slug):
     if slug == "steden":
         return promote_h1(SEC["steden"]) + f'<section class="paper light"><div class="wrap"><div class="head"><h2>Kies je stad.</h2></div><div class="sgrid sgrid3">' + "".join(f'<a class="sc" href="{url(slug, "steden/"+c)}" data-track="stad-{c}"><div><h4>Fietskoerier in {n}</h4><p>{d}</p></div></a>' for c, n, d in [("gent", "Gent", "Thuishaven, met AZ Sint-Lucas en de biotechcluster."), ("antwerpen", "Antwerpen", "Samen met De Fietskoerier."), ("brussel", "Brussel", "Vaste labrondes, filialen en zendingen.")]) + "</div></div></section>" + ctaband(slug, "Zit je net buiten onze steden? Vraag het ons.", "andere", "Vraag het ons"), meta_faq
     if slug == "klanten":
-        return pagehead(slug, "Meer dan 1000 klanten laten zich ontzorgen.", "Van ziekenhuizen tot koffiebranders en van webshops tot overheden: dit zeggen en ervaren onze klanten.", image=IMG["doorstep"]) + SEC["klanten"].replace("<h2>", "<h2 class=\"sr-only\">", 1).replace("</h2>", "</h2>", 1) + SEC["reviews"] + ctaband(slug, "Word ook ontzorgd.", None), meta_faq
+        return pagehead(slug, "Meer dan 1000 klanten laten zich ontzorgen.", "Van ziekenhuizen tot koffiebranders en van webshops tot overheden: dit zeggen en ervaren onze klanten.", image=IMG["doorstep"]) + SEC["klanten"] + SEC["reviews"] + ctaband(slug, "Word ook ontzorgd.", None), meta_faq
     if slug == "duurzaamheid":
         return promote_h1(SEC["duurzaam"]) + ctaband(slug, "Verduurzaam je leveringen vandaag.", None), meta_faq
     if slug == "over-ons":
-        return pagehead(slug, "Mensen die je stad kennen.", "Cargo Velo en De Fietskoerier zijn samen het grootste fietskoeriersbedrijf van België. Opgeleide, vaste koeriers die de kortste weg kennen en met een glimlach afleveren.", image=IMG["team"], cta=("Plan je levering", None)) + SEC["mensen"].replace("<h2>Mensen die je stad kennen.</h2>", "<h2>Onze mensen.</h2>") + f'<section class="paper light"><div class="wrap"><p class="big">Meer lezen over ons verhaal, de fusie en werken bij Cargo Velo? <a href="{url(slug, "")}../v1/nl/over-ons/" style="text-decoration:underline">Bekijk de huidige pagina</a> of <a href="{url(slug, "")}../v1/nl/over-ons/word-fietskoerier/" style="text-decoration:underline">word fietskoerier</a>.</p></div></section>' + ctaband(slug, "Maak kennis met je vaste koerier.", None), meta_faq
+        return pagehead(slug, "Mensen die je stad kennen.", "Cargo Velo en De Fietskoerier zijn samen het grootste fietskoeriersbedrijf van België. Opgeleide, vaste koeriers die de kortste weg kennen en met een glimlach afleveren.", image=IMG["team"], cta=("Plan je levering", None)) + re.sub(r"<p>Cargo Velo en De Fietskoerier zijn samen.*?</p>", "", SEC["mensen"].replace("<h2>Mensen die je stad kennen.</h2>", "<h2>Onze mensen.</h2>"), count=1, flags=re.S) + f'<section class="paper light"><div class="wrap"><p class="big">Meer lezen over ons verhaal, de fusie en werken bij Cargo Velo? <a href="{url(slug, "")}../v1/nl/over-ons/" style="text-decoration:underline">Bekijk de huidige pagina</a> of <a href="{url(slug, "")}../v1/nl/over-ons/word-fietskoerier/" style="text-decoration:underline">word fietskoerier</a>.</p></div></section>' + ctaband(slug, "Maak kennis met je vaste koerier.", None), meta_faq
     if slug == "contact":
         form = SEC["boeken"].replace("<h2>Zeg wat je kwijt wil. Wij ontzorgen de rest.</h2>", "<h1>Zeg wat je kwijt wil. Wij ontzorgen de rest.</h1>")
         return form, meta_faq
     raise KeyError(slug)
 
+J_BTN = '\n// ---- snazzy CTA buttons + live dispatch status ----\n(function(){\n var fine=matchMedia(\'(pointer:fine)\').matches;\n var BIKE=\'<svg class="rd" viewBox="0 0 24 16" aria-hidden="true"><circle cx="4.5" cy="11" r="3.4"/><circle cx="19.5" cy="11" r="3.4"/><path d="M4.5 11l5-7.5h5.5l4.5 7.5M9.5 3.5L13 11"/></svg>\';\n var btns=[];\n document.querySelectorAll(\'.btn-green\').forEach(function(b){\n  if(b.closest(\'form\')||b.tagName===\'SPAN\'||b.classList.contains(\'go\'))return;\n  var t=b.textContent.trim();b.classList.add(\'go\');btns.push(b);\n  if(/^cta-(nav|hero|head|band|sticky)$/.test(b.dataset.track||\'\'))b.classList.add(\'pulse\');\n  b.innerHTML=\'<span class="sheen"></span>\'+BIKE+\'<span class="lbl"></span>\';b.querySelector(\'.lbl\').textContent=t;\n  b.addEventListener(\'pointermove\',function(e){var r=b.getBoundingClientRect();b.style.setProperty(\'--mx\',(e.clientX-r.left)+\'px\');b.style.setProperty(\'--my\',(e.clientY-r.top)+\'px\')});\n  b.addEventListener(\'pointerdown\',function(e){var r=b.getBoundingClientRect(),s=document.createElement(\'span\');s.className=\'rip\';s.style.left=(e.clientX-r.left)+\'px\';s.style.top=(e.clientY-r.top)+\'px\';b.appendChild(s);setTimeout(function(){s.remove()},650)});\n });\n if(!reduce&&fine&&btns.length){var raf=0,px=0,py=0;\n  document.addEventListener(\'pointermove\',function(e){px=e.clientX;py=e.clientY;if(raf)return;raf=requestAnimationFrame(function(){raf=0;\n   btns.forEach(function(b){var r=b.getBoundingClientRect();if(r.bottom<-100||r.top>innerHeight+100){return}\n    var cx=r.left+r.width/2,cy=r.top+r.height/2,dx=px-cx,dy=py-cy,d=Math.hypot(dx,dy),reach=r.width/2+70;\n    if(d<reach){var k=Math.min(1,(reach-d)/reach);b.style.setProperty(\'--tx\',(dx*.22*k).toFixed(1)+\'px\');b.style.setProperty(\'--ty\',(dy*.3*k).toFixed(1)+\'px\')}\n    else{b.style.setProperty(\'--tx\',\'0px\');b.style.setProperty(\'--ty\',\'0px\')}})})},{passive:true});\n }\n // dispatch reachable now? Klantenservice: Mon-Fri 8u-17u (Brussels time)\n function open(){try{var p=new Intl.DateTimeFormat(\'en-GB\',{timeZone:\'Europe/Brussels\',weekday:\'short\',hour:\'numeric\',hour12:false}).formatToParts(new Date()),w=p.find(function(x){return x.type===\'weekday\'}).value,h=+p.find(function(x){return x.type===\'hour\'}).value%24;return [\'Mon\',\'Tue\',\'Wed\',\'Thu\',\'Fri\'].indexOf(w)>-1&&h>=8&&h<17}catch(e){return false}}\n var on=open(),tel=document.querySelector(\'.nav .tel\');\n if(tel){var d=document.createElement(\'i\');d.className=\'dot\'+(on?\' on\':\'\');tel.insertBefore(d,tel.firstChild);tel.title=on?\'Ons dispatchteam is nu bereikbaar\':\'Dispatch bereikbaar ma tot vr, 8u tot 17u\'}\n var ds=document.getElementById(\'dispatch-status\');\n if(ds)ds.textContent=on?\'Ons dispatchteam is nu bereikbaar: 0479 33 68 99\':\'Dispatch bereikbaar ma tot vr, 8u tot 17u. Stuur je aanvraag gerust nu.\';\n})();\n'
+
 # ---------------------------------------------------------------- extra CSS
 EXTRA_CSS = """
+@media (max-width:1000px){.haast .dispatch{order:2}}
+
+/* ---- snazzy CTA ---- */
+.btn-green.go{position:relative;overflow:hidden;isolation:isolate;transform:translate(var(--tx,0px),var(--ty,0px));transition:transform .18s ease-out,background .2s,color .2s,box-shadow .2s;will-change:transform;--mx:50%;--my:50%}
+.btn-green.go:hover{transform:translate(var(--tx,0px),calc(var(--ty,0px) - 2px));background:var(--green);box-shadow:0 14px 34px -8px rgba(0,255,110,.65)}
+.btn-green.go::after{content:"";position:absolute;left:16px;right:16px;bottom:5px;border-bottom:1.5px dashed rgba(0,0,0,0);z-index:1;transition:border-color .25s}
+.btn-green.go:hover::after{border-color:rgba(0,0,0,.32)}
+.btn-green.go .lbl{position:relative;z-index:2;transition:letter-spacing .25s}
+.btn-green.go:hover .lbl{letter-spacing:.01em}
+.btn-green.go .sheen{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity .25s;background:radial-gradient(110px circle at var(--mx) var(--my),rgba(255,255,255,.95),rgba(255,255,255,0) 62%)}
+.btn-green.go:hover .sheen{opacity:.9}
+.btn-green.go .rd{position:absolute;left:-34px;bottom:4px;width:21px;height:14px;z-index:3;fill:none;stroke:#000;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:0;pointer-events:none}
+.btn-green.go:hover .rd{animation:ride .95s cubic-bezier(.45,.05,.3,1) 1}
+@keyframes ride{0%{left:-34px;opacity:1}100%{left:calc(100% + 12px);opacity:1}}
+.btn-green.go.pulse{animation:ring 2.8s ease-out infinite}
+.btn-green.go.pulse:hover{animation:none}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(0,255,110,.6)}65%{box-shadow:0 0 0 18px rgba(0,255,110,0)}100%{box-shadow:0 0 0 0 rgba(0,255,110,0)}}
+.btn-green.go:active{transform:translate(var(--tx,0px),var(--ty,0px)) scale(.96)}
+.btn-green.go .rip{position:absolute;z-index:2;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:rgba(0,0,0,.28);animation:rip .6s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(22);opacity:0}}
+.tel{display:inline-flex;align-items:center;gap:8px}
+.tel .dot{width:8px;height:8px;border-radius:50%;background:#666;display:inline-block}
+.tel .dot.on{background:var(--green);box-shadow:0 0 0 0 rgba(0,255,110,.7);animation:ring 2.2s infinite}
+.stickycta{display:none}
+@media (max-width:700px){
+  .stickycta{display:flex;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:90;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(0,0,0,.9);backdrop-filter:blur(14px);border-top:1px solid #222}
+  .stickycta .btn{flex:1;padding:14px 12px;font-size:14px}
+  .stickycta .btn-black{flex:0 0 auto;background:#1b1b1b;border:1px solid #333}
+  body{padding-bottom:72px}
+  #proto{bottom:84px}
+}
+@media (prefers-reduced-motion:reduce){.btn-green.go .rd{display:none}.btn-green.go.pulse,.tel .dot.on{animation:none}.btn-green.go{transform:none!important}}
+.mosaic{grid-template-columns:repeat(12,1fr)}
+.mosaic .a{grid-column:span 6;grid-row:span 2}.mosaic .b{grid-column:span 6}.mosaic .c,.mosaic .d{grid-column:span 3}
+.co2 .zero{white-space:nowrap;font-size:clamp(48px,6.4vw,92px)}
+.co2 .zero sub,.co2 .zero small{font-size:.5em}
+@media (max-width:1000px){.mosaic{grid-template-columns:1fr 1fr}.mosaic .a,.mosaic .b,.mosaic .c,.mosaic .d{grid-column:span 1;grid-row:auto}}
+.metrics b span{display:inline;margin:0;font:inherit;color:inherit;letter-spacing:inherit}
+.nav .links{align-items:center}
+.nav .links a,.nav .mt{display:inline-flex;align-items:center;height:40px;padding:0;line-height:1;font:500 15px/1 Inter}
+.nav .links a::after{bottom:4px}
 .nav>.wrap{display:flex;align-items:center;justify-content:space-between;height:76px;gap:20px}
 .pagehead{padding:56px 0 72px}
 .pagehead .crumbs{font-size:13px;color:#9a9a9a;margin-bottom:26px}
@@ -409,7 +453,7 @@ EXTRA_CSS = """
 .sgrid-links .sc{background:#000;min-height:200px;transition:background .2s,color .2s}
 .sgrid-links .sc:hover{background:var(--green);color:#000}
 .sgrid-links .sc:hover p{color:#0a0a0a}
-.sgrid3 .sc{background:#000}
+.sgrid3 .sc{background:#000;min-height:220px}
 .sgrid3 .sc.g{background:var(--green)}
 .sgrid3 a.sc{color:#fff}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
@@ -440,6 +484,8 @@ def write(slug, body_faq):
     has_form = 'id="form"' in body
     has_city = 'id="cpanel"' in body
     has_hero = 'id="hv"' in body
+    cta_href = "#boeken" if slug == "" else url(slug, "contact")
+    sticky = "" if slug == "contact" else f'<div class="stickycta"><a class="btn btn-black" href="tel:+32479336899" data-track="bel-sticky">Bel dispatch</a><a class="btn btn-green" href="{cta_href}" data-track="cta-sticky">Plan je levering</a></div>'
     faq_block = "" if slug in ("",) else faq_html(faq_keys)
     if slug == "": faq_block = faq_html(["steden", "intercity", "buiten", "haast", "klant", "bewijs"]); faq_keys = ["steden", "intercity", "buiten", "haast", "klant", "bewijs"]
     page = f"""<!doctype html>
@@ -461,6 +507,7 @@ def write(slug, body_faq):
 {body}
 {faq_block}
 {footer(slug)}
+{sticky}
 {script(slug, has_form, has_city, has_hero)}
 </body>
 </html>

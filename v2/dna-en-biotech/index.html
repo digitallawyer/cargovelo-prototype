@@ -490,6 +490,47 @@ footer .legal{padding-top:22px;display:flex;justify-content:space-between;font-s
 }
 @media (max-width:600px){.wgrid,.sgrid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr 1fr}.metrics b{font-size:36px}.mq img{height:36px}.photo .inset{display:none}}
 
+@media (max-width:1000px){.haast .dispatch{order:2}}
+
+/* ---- snazzy CTA ---- */
+.btn-green.go{position:relative;overflow:hidden;isolation:isolate;transform:translate(var(--tx,0px),var(--ty,0px));transition:transform .18s ease-out,background .2s,color .2s,box-shadow .2s;will-change:transform;--mx:50%;--my:50%}
+.btn-green.go:hover{transform:translate(var(--tx,0px),calc(var(--ty,0px) - 2px));background:var(--green);box-shadow:0 14px 34px -8px rgba(0,255,110,.65)}
+.btn-green.go::after{content:"";position:absolute;left:16px;right:16px;bottom:5px;border-bottom:1.5px dashed rgba(0,0,0,0);z-index:1;transition:border-color .25s}
+.btn-green.go:hover::after{border-color:rgba(0,0,0,.32)}
+.btn-green.go .lbl{position:relative;z-index:2;transition:letter-spacing .25s}
+.btn-green.go:hover .lbl{letter-spacing:.01em}
+.btn-green.go .sheen{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity .25s;background:radial-gradient(110px circle at var(--mx) var(--my),rgba(255,255,255,.95),rgba(255,255,255,0) 62%)}
+.btn-green.go:hover .sheen{opacity:.9}
+.btn-green.go .rd{position:absolute;left:-34px;bottom:4px;width:21px;height:14px;z-index:3;fill:none;stroke:#000;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:0;pointer-events:none}
+.btn-green.go:hover .rd{animation:ride .95s cubic-bezier(.45,.05,.3,1) 1}
+@keyframes ride{0%{left:-34px;opacity:1}100%{left:calc(100% + 12px);opacity:1}}
+.btn-green.go.pulse{animation:ring 2.8s ease-out infinite}
+.btn-green.go.pulse:hover{animation:none}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(0,255,110,.6)}65%{box-shadow:0 0 0 18px rgba(0,255,110,0)}100%{box-shadow:0 0 0 0 rgba(0,255,110,0)}}
+.btn-green.go:active{transform:translate(var(--tx,0px),var(--ty,0px)) scale(.96)}
+.btn-green.go .rip{position:absolute;z-index:2;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:rgba(0,0,0,.28);animation:rip .6s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(22);opacity:0}}
+.tel{display:inline-flex;align-items:center;gap:8px}
+.tel .dot{width:8px;height:8px;border-radius:50%;background:#666;display:inline-block}
+.tel .dot.on{background:var(--green);box-shadow:0 0 0 0 rgba(0,255,110,.7);animation:ring 2.2s infinite}
+.stickycta{display:none}
+@media (max-width:700px){
+  .stickycta{display:flex;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:90;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(0,0,0,.9);backdrop-filter:blur(14px);border-top:1px solid #222}
+  .stickycta .btn{flex:1;padding:14px 12px;font-size:14px}
+  .stickycta .btn-black{flex:0 0 auto;background:#1b1b1b;border:1px solid #333}
+  body{padding-bottom:72px}
+  #proto{bottom:84px}
+}
+@media (prefers-reduced-motion:reduce){.btn-green.go .rd{display:none}.btn-green.go.pulse,.tel .dot.on{animation:none}.btn-green.go{transform:none!important}}
+.mosaic{grid-template-columns:repeat(12,1fr)}
+.mosaic .a{grid-column:span 6;grid-row:span 2}.mosaic .b{grid-column:span 6}.mosaic .c,.mosaic .d{grid-column:span 3}
+.co2 .zero{white-space:nowrap;font-size:clamp(48px,6.4vw,92px)}
+.co2 .zero sub,.co2 .zero small{font-size:.5em}
+@media (max-width:1000px){.mosaic{grid-template-columns:1fr 1fr}.mosaic .a,.mosaic .b,.mosaic .c,.mosaic .d{grid-column:span 1;grid-row:auto}}
+.metrics b span{display:inline;margin:0;font:inherit;color:inherit;letter-spacing:inherit}
+.nav .links{align-items:center}
+.nav .links a,.nav .mt{display:inline-flex;align-items:center;height:40px;padding:0;line-height:1;font:500 15px/1 Inter}
+.nav .links a::after{bottom:4px}
 .nav>.wrap{display:flex;align-items:center;justify-content:space-between;height:76px;gap:20px}
 .pagehead{padding:56px 0 72px}
 .pagehead .crumbs{font-size:13px;color:#9a9a9a;margin-bottom:26px}
@@ -508,7 +549,7 @@ footer .legal{padding-top:22px;display:flex;justify-content:space-between;font-s
 .sgrid-links .sc{background:#000;min-height:200px;transition:background .2s,color .2s}
 .sgrid-links .sc:hover{background:var(--green);color:#000}
 .sgrid-links .sc:hover p{color:#0a0a0a}
-.sgrid3 .sc{background:#000}
+.sgrid3 .sc{background:#000;min-height:220px}
 .sgrid3 .sc.g{background:var(--green)}
 .sgrid3 a.sc{color:#fff}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
@@ -594,6 +635,7 @@ footer .legal{padding-top:22px;display:flex;justify-content:space-between;font-s
   </div>
   <div class="legal"><span>Prototype v2: geen officiële Cargo Velo-website. Beelden en klantgegevens komen van cargovelo.be.</span><span><a href="../../v1/nl/privacy-policy/">Privacy</a> &nbsp; <a href="../../v1/nl/voorwaarden/">Voorwaarden</a> &nbsp; <a href="../strategie/">Strategie (intern)</a></span></div>
 </div></footer>
+<div class="stickycta"><a class="btn btn-black" href="tel:+32479336899" data-track="bel-sticky">Bel dispatch</a><a class="btn btn-green" href="../contact/" data-track="cta-sticky">Plan je levering</a></div>
 <script>
 (function(){
 var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -615,6 +657,34 @@ mg.addEventListener('click',function(e){if(e.target.closest('a'))mega(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!mg.hidden){mega(false);mt.focus()}});
 document.addEventListener('click',function(e){if(!mg.hidden&&!nv.contains(e.target))mega(false)});
 window.addEventListener('scroll',function(){if(!mg.hidden&&matchMedia('(min-width:1001px)').matches)mega(false)},{passive:true});
+
+// ---- snazzy CTA buttons + live dispatch status ----
+(function(){
+ var fine=matchMedia('(pointer:fine)').matches;
+ var BIKE='<svg class="rd" viewBox="0 0 24 16" aria-hidden="true"><circle cx="4.5" cy="11" r="3.4"/><circle cx="19.5" cy="11" r="3.4"/><path d="M4.5 11l5-7.5h5.5l4.5 7.5M9.5 3.5L13 11"/></svg>';
+ var btns=[];
+ document.querySelectorAll('.btn-green').forEach(function(b){
+  if(b.closest('form')||b.tagName==='SPAN'||b.classList.contains('go'))return;
+  var t=b.textContent.trim();b.classList.add('go');btns.push(b);
+  if(/^cta-(nav|hero|head|band|sticky)$/.test(b.dataset.track||''))b.classList.add('pulse');
+  b.innerHTML='<span class="sheen"></span>'+BIKE+'<span class="lbl"></span>';b.querySelector('.lbl').textContent=t;
+  b.addEventListener('pointermove',function(e){var r=b.getBoundingClientRect();b.style.setProperty('--mx',(e.clientX-r.left)+'px');b.style.setProperty('--my',(e.clientY-r.top)+'px')});
+  b.addEventListener('pointerdown',function(e){var r=b.getBoundingClientRect(),s=document.createElement('span');s.className='rip';s.style.left=(e.clientX-r.left)+'px';s.style.top=(e.clientY-r.top)+'px';b.appendChild(s);setTimeout(function(){s.remove()},650)});
+ });
+ if(!reduce&&fine&&btns.length){var raf=0,px=0,py=0;
+  document.addEventListener('pointermove',function(e){px=e.clientX;py=e.clientY;if(raf)return;raf=requestAnimationFrame(function(){raf=0;
+   btns.forEach(function(b){var r=b.getBoundingClientRect();if(r.bottom<-100||r.top>innerHeight+100){return}
+    var cx=r.left+r.width/2,cy=r.top+r.height/2,dx=px-cx,dy=py-cy,d=Math.hypot(dx,dy),reach=r.width/2+70;
+    if(d<reach){var k=Math.min(1,(reach-d)/reach);b.style.setProperty('--tx',(dx*.22*k).toFixed(1)+'px');b.style.setProperty('--ty',(dy*.3*k).toFixed(1)+'px')}
+    else{b.style.setProperty('--tx','0px');b.style.setProperty('--ty','0px')}})})},{passive:true});
+ }
+ // dispatch reachable now? Klantenservice: Mon-Fri 8u-17u (Brussels time)
+ function open(){try{var p=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Brussels',weekday:'short',hour:'numeric',hour12:false}).formatToParts(new Date()),w=p.find(function(x){return x.type==='weekday'}).value,h=+p.find(function(x){return x.type==='hour'}).value%24;return ['Mon','Tue','Wed','Thu','Fri'].indexOf(w)>-1&&h>=8&&h<17}catch(e){return false}}
+ var on=open(),tel=document.querySelector('.nav .tel');
+ if(tel){var d=document.createElement('i');d.className='dot'+(on?' on':'');tel.insertBefore(d,tel.firstChild);tel.title=on?'Ons dispatchteam is nu bereikbaar':'Dispatch bereikbaar ma tot vr, 8u tot 17u'}
+ var ds=document.getElementById('dispatch-status');
+ if(ds)ds.textContent=on?'Ons dispatchteam is nu bereikbaar: 0479 33 68 99':'Dispatch bereikbaar ma tot vr, 8u tot 17u. Stuur je aanvraag gerust nu.';
+})();
 
 // ---- who clicks what: page trail + CTA source, shared with the request form ----
 try{var tr=JSON.parse(sessionStorage.getItem('cvTrail')||'[]');tr.push({p:location.pathname.replace(/^.*\/v2\//,'v2/'),t:new Date().toISOString().slice(11,19)});sessionStorage.setItem('cvTrail',JSON.stringify(tr.slice(-12)))}catch(e){}
