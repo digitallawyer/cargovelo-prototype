@@ -6,7 +6,7 @@ A prototype for the Cargo Velo team. **Not the official website.** It is hidden 
 |---|---|---|
 | **Start page** | Choose v1 or v2 | `/` |
 | **v1** | The current cargovelo.be, cloned as closely as possible: all 61 pages in Dutch and French from the sitemap | `/v1/nl/`, `/v1/fr/` |
-| **v2** | The prototype: positioned on *ontzorgen*, with express, medical samples, DNA/biotech, the three-city network, reviews and a multi-step form | `/v2/` |
+| **v2** | The prototype: 16 pages positioned on *ontzorgen* (home, Haast, medical samples, DNA/biotech, sensitive deliveries, vaste rondes, logistics partners, webshops, the three-city network with a page per city, customers, sustainability, about, request form) | `/v2/` |
 | **Strategy** | Positioning, 18-month growth plan, query coverage (internal) | `/v2/strategie/` |
 
 A small switch in the bottom-left corner of every page moves between v1 and v2.
@@ -17,6 +17,12 @@ A small switch in the bottom-left corner of every page moves between v1 and v2.
 - Images, scripts and the homepage video are loaded from `cargovelo.be`, so v1 always shows the latest assets and needs no copied media. The theme stylesheet and its fonts (Inter, Poppins) are copied, because browsers block cross-origin fonts.
 - Analytics and canonical tags were removed, and forms are disabled (they show a notice) so the prototype never creates real enquiries.
 - If cargovelo.be is down or changes, v1 may look different from the live site.
+
+## How v2 is built
+
+v2 is generated: `python3 tools/build_v2.py` assembles the pages from the one-page prototype in `tools/v2_onepage.html` (kept as a component library). Edit the script or that file, rebuild, then commit. Each page has its own title, description, breadcrumb and FAQ, plus Service, FAQPage and LocalBusiness JSON-LD. Every page is `noindex` for now.
+
+Click tracking for the team: call-to-actions carry their source (`data-track`), and the request email includes `Via_pagina` (the call-to-action and page clicked) and `Bekeken_paginas` (pages viewed in that session). Nothing is sent anywhere until a visitor submits a request.
 
 ## v2 form (sends an email)
 
